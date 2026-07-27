@@ -1,6 +1,7 @@
 from fastapi import APIRouter,Depends, HTTPException 
 from sqlalchemy.orm import Session 
 from models.application import Application
+from models.applicant_profile import ApplicantProfile
 from models.jobs import Jobs
 from models.user import Users
 from schemas.application import (
@@ -35,13 +36,33 @@ def create_application(
                                                          Application.job_id == application_create.job_id).first()) 
     if existing_application:
         raise HTTPException(status_code = 409, detail = "You have already applied for this job")
+    applicant_profile = (
+        db.query(ApplicantProfile)
+        .filter(ApplicantProfile.user_id == current_user.id)
+        .first()
+    )
+
+    if not applicant_profile:
+        raise HTTPException(
+            status_code=404,
+            detail="Applicant profile not found."
+        )
+
+    # Check resume
+    if not applicant_profile.resume_url:
+        raise HTTPException(
+            status_code=400,
+            detail="Please upload your resume before applying."
+        )
     
     new_application = Application(
-        applicant_id = current_user.id,
-        job_id =      application_create.job_id,
-        status =      ApplicationStatus.APPLIED
-         
+        applicant_id=current_user.id,
+        job_id=application_create.job_id,
+        status=ApplicationStatus.APPLIED,
+        resume_url=applicant_profile.resume_url,
+        resume_public_id=applicant_profile.resume_public_id
     )
+
     db.add(new_application)
     db.commit()
     db.refresh(new_application)
@@ -51,7 +72,7 @@ def create_application(
 @router.get("/my-applications",response_model = list[ApplicationResponse])
 
 def get_my_applications(db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if not current_user.role != "applicant":
+    if current_user.role != "applicant":
         raise HTTPException(status_code = 403,detail = "Only applicants can view their applications")
     applications = (db.query(Application).filter(Application.applicant_id == current_user.id).all()) 
     
@@ -81,7 +102,8 @@ def get_job_applications(job_id:int,db:Session = Depends(get_db),current_user = 
                 applicant_name = application.user.name,
                 applicant_email = application.user.email,
                 status = application.status,
-                applied_at = application.applied_at
+                applied_at = application.applied_at,
+                resume_url = application.resume_url
             )
         )
     return response 

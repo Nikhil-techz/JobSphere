@@ -1,10 +1,10 @@
-from fastapi import APIRouter,Depends, HTTPException 
+from fastapi import APIRouter,Depends, HTTPException ,File, UploadFile
 from sqlalchemy.orm import Session 
 from dependencies.auth_dependency import get_current_user
 from database.dependency import get_db
 from models.applicant_profile import ApplicantProfile
 from schemas.applicant_profile import (ApplicantProfileBase,ApplicantProfileCreate,
-                                       UpdateApplicantProfile,ApplicantProfileResponse) 
+                                       UpdateApplicantProfile,ApplicantProfileResponse,ResumeUploadResponse) 
 
 router = APIRouter(prefix="/applicant-profile",tags=["Applicant Profile"])
 
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/applicant-profile",tags=["Applicant Profile"])
 def create_applicant_profile(applicant_profile:ApplicantProfileCreate,db: Session = Depends(get_db),
     current_user = Depends(get_current_user)):
     if current_user.role != "applicant":
-        raise HTTPException(status_code = 403, detail = "only applicants can creat applicant profile.")
+        raise HTTPException(status_code = 403, detail = "only applicants can create an applicant profile.")
 
     existing_profile = (db.query(ApplicantProfile).filter(ApplicantProfile.user_id == current_user.id).first())
     if existing_profile:

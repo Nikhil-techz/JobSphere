@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel 
-
+from typing import Optional
 
 
 
@@ -25,6 +25,8 @@ class ApplicationResponse(ApplicationBase):
     id: int
     applicant_id: int
     status: ApplicationStatus
+    resume_url:str
+    resume_public_id: Optional[str] = None
     applied_at: datetime
     
 
@@ -53,6 +55,7 @@ class RecruiterApplicationResponse(BaseModel):
     applicant_email: str
     status: ApplicationStatus
     applied_at: datetime
+    resume_url: str
 
     model_config = {
         "from_attributes": True

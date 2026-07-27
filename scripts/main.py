@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.db import engine, Base
-from Routes import user,auth,jobs,application
+from Routes import user,auth,jobs,application,applicant_profile, recruiter_profile,resume_upload
 import database.base 
 
 
@@ -24,6 +24,10 @@ app.include_router(user.router,prefix="/users",tags=["Users"])
 app.include_router(auth.router,prefix="/auth",tags=["Auth"]) 
 app.include_router(jobs.router)
 app.include_router(application.router) 
+app.include_router(applicant_profile.router)
+app.include_router(recruiter_profile.router)
+app.include_router(resume_upload.router) 
+
 
 @app.get("/")
 def home():
