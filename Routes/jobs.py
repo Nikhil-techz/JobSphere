@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException 
+from fastapi import Query
 from typing import List
 from dependencies.auth_dependency import get_current_user
 from sqlalchemy.orm import Session 
 from models.jobs import Jobs
-from schemas.job import JobCreate,JobResponse,JobUpdate,FeatureJob
+from schemas.job import JobCreate,JobResponse,JobUpdate,FeatureJob,PaginatedJobResponse
 from database.dependency import get_db
 from datetime import datetime
+from services.job_services import get_jobs
 
 router = APIRouter(prefix="/jobs",tags=["Jobs"])
 
@@ -32,11 +34,29 @@ def create_jobs(job_data:JobCreate,db:Session = Depends(get_db),current_user = D
     return new_jobs 
 
 
-@router.get("/",response_model = List[JobResponse]) 
-def get_all_jobs(db:Session = Depends(get_db)):
+@router.get("/",response_model = PaginatedJobResponse) 
+def get_all_jobs(
+    db:Session = Depends(get_db),
+    title: str | None = None,
+    company: str | None = None,
+    location: str | None = None,
+    experience_level: int | None = None,
+    sort :str | None = None,
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100)
+    ):
 
-    jobs = (db.query(Jobs).filter(Jobs.is_active == True).all()) 
-    return jobs  
+    # jobs = (db.query(Jobs).filter(Jobs.is_active == True).all()) 
+    return get_jobs(
+        db = db,
+        title=title,
+        company=company,
+        location=location,
+        experience_level = experience_level,
+        sort = sort,
+        page = page,
+        limit = limit
+    )
 
 
 @router.get("/{id}",response_model = JobResponse)
@@ -66,7 +86,7 @@ def update_jobs(job_id:int, job_data:JobUpdate,db:Session = Depends(get_db),curr
     db.refresh(update_jobs)
     return update_jobs 
 
-@router.patch("/jobs/{job_id}/feature",response_model = JobResponse)
+@router.patch("/{job_id}/feature",response_model = JobResponse)
 def featured_jobs(job_id:int,job_data:FeatureJob,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
     if current_user.role != "recruiter":
         raise HTTPException(status_code = 403,detail = "Only Recruiter Can Featured Jobs.")
@@ -82,7 +102,7 @@ def featured_jobs(job_id:int,job_data:FeatureJob,db:Session = Depends(get_db),cu
     db.refresh(job)
     return job
     
-@router.get("/jobs/featured", response_model=list[JobResponse])
+@router.get("/featured", response_model=list[JobResponse])
 def get_featured_jobs(db: Session = Depends(get_db),current_user = Depends(get_current_user)):
     featured_job = (db.query(Jobs).filter(
         Jobs.is_active == True,Jobs.is_featured == True,

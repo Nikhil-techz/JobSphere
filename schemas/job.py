@@ -41,4 +41,11 @@ class JobResponse(JobBase):
     featured_until: datetime | None = None
     featured_priority: int
 
+class PaginatedJobResponse(BaseModel):
+    page: int
+    limit: int
+    total: int
+    total_pages: int
+    data: list[JobResponse]
+
     model_config = {"from_attributes": True}  
