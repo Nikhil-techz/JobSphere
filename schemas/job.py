@@ -40,6 +40,9 @@ class JobResponse(JobBase):
     is_featured: bool
     featured_until: datetime | None = None
     featured_priority: int
+    class Config:
+
+        orm_mode = True
 
 class PaginatedJobResponse(BaseModel):
     page: int

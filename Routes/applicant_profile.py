@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from dependencies.auth_dependency import get_current_user
 from database.dependency import get_db
 from models.applicant_profile import ApplicantProfile
+from schemas.user import UserRole
 from schemas.applicant_profile import (ApplicantProfileBase,ApplicantProfileCreate,
                                        UpdateApplicantProfile,ApplicantProfileResponse,ResumeUploadResponse) 
 
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/applicant-profile",tags=["Applicant Profile"])
 
 def create_applicant_profile(applicant_profile:ApplicantProfileCreate,db: Session = Depends(get_db),
     current_user = Depends(get_current_user)):
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403, detail = "only applicants can create an applicant profile.")
 
     existing_profile = (db.query(ApplicantProfile).filter(ApplicantProfile.user_id == current_user.id).first())
@@ -28,7 +29,7 @@ def create_applicant_profile(applicant_profile:ApplicantProfileCreate,db: Sessio
 @router.get("/",response_model = ApplicantProfileResponse)
 
 def get_applicant_profile(db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code=403,detail="Only applicants can access applicant profiles.")
     profile = (db.query(ApplicantProfile).filter(ApplicantProfile.user_id == current_user.id).first())
     if not profile:
@@ -38,7 +39,7 @@ def get_applicant_profile(db:Session = Depends(get_db),current_user = Depends(ge
 @router.patch("/",response_model = ApplicantProfileResponse)
 
 def update_applicant_profile(update_profile:UpdateApplicantProfile,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403, detail ="Only applicants can update their profiles.")
     
     profile = (db.query(ApplicantProfile).filter(ApplicantProfile.user_id == current_user.id).first())

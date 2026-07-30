@@ -23,3 +23,4 @@ class Jobs(Base):
     
     applications = relationship("Application",back_populates="job",cascade="all,delete") 
     recruiter = relationship("Users",back_populates = "job")
+    saved_by = relationship("Saved_jobs", back_populates="job")

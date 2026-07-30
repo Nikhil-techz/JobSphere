@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from dependencies.auth_dependency import get_current_user
 from database.dependency import get_db
 from models.recruiter_profile import RecruiterProfile
+from schemas.user import UserRole
 from schemas.recruiter_profile import(
     RecruiterProfileBase,
     RecruiterProfileCreate,
@@ -16,7 +17,7 @@ router = APIRouter(prefix="/recruiter-profile",tags=["Recruiter Profile"])
 
 def create_recruiter_profile(recruiter_profile:RecruiterProfileCreate,db: Session = Depends(get_db),
     current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403,detail = "only recruiters can create recruiter profile.")
     existing_profile = (db.query(RecruiterProfile).filter(RecruiterProfile.user_id == current_user.id).first())
     if existing_profile:
@@ -29,7 +30,7 @@ def create_recruiter_profile(recruiter_profile:RecruiterProfileCreate,db: Sessio
 
 @router.get("/",response_model = RecruiterProfileResponse)
 def get_recruiter_profile(db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code=403,detail="Only recruiters can access recruiter profiles.")
     profile = (db.query(RecruiterProfile).filter(RecruiterProfile.user_id == current_user.id).first())
     if not profile:
@@ -39,7 +40,7 @@ def get_recruiter_profile(db:Session = Depends(get_db),current_user = Depends(ge
 @router.patch("/",response_model = RecruiterProfileResponse)
 
 def update_applicant_profile(update_profile:RecruiterProfileUpdate,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403, detail ="Only applicants can update their profiles.")
     
     profile = (db.query(RecruiterProfile).filter(RecruiterProfile.user_id == current_user.id).first())

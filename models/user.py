@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer,String
 from sqlalchemy.orm import relationship
 from database.db import Base
 
+
 class Users(Base):
     __tablename__ = "users"
 
@@ -18,6 +19,8 @@ class Users(Base):
 )
 
     recruiter_profile = relationship("RecruiterProfile",back_populates="user",uselist=False,cascade="all, delete-orphan",)
+
+    saved_jobs = relationship("Saved_jobs", back_populates="applicant") 
     
     
     

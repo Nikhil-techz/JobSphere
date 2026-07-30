@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.db import engine, Base
-from Routes import user,auth,jobs,application,applicant_profile, recruiter_profile,resume_upload
+from Routes import (
+    user,auth,jobs,application,applicant_profile, 
+    recruiter_profile,resume_upload,saved_jobs
+
+    )
 import database.base 
 
 
@@ -27,6 +31,7 @@ app.include_router(application.router)
 app.include_router(applicant_profile.router)
 app.include_router(recruiter_profile.router)
 app.include_router(resume_upload.router) 
+app.include_router(saved_jobs.router)
 
 
 @app.get("/")

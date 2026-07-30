@@ -4,6 +4,7 @@ from models.application import Application
 from models.applicant_profile import ApplicantProfile
 from models.jobs import Jobs
 from models.user import Users
+from schemas.user import UserRole
 from schemas.application import (
     ApplicationStatus,
     ApplicationBase,
@@ -27,7 +28,7 @@ def create_application(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403, detail = "only applicants can apply for job")
     existing_job = (db.query(Jobs).filter(Jobs.id == application_create.job_id).first()) 
     if not existing_job:
@@ -72,7 +73,7 @@ def create_application(
 @router.get("/my-applications",response_model = list[ApplicationResponse])
 
 def get_my_applications(db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403,detail = "Only applicants can view their applications")
     applications = (db.query(Application).filter(Application.applicant_id == current_user.id).all()) 
     
@@ -83,7 +84,7 @@ def get_my_applications(db:Session = Depends(get_db),current_user = Depends(get_
 @router.get("/jobs/{job_id}/applications",response_model = list[RecruiterApplicationResponse]) 
 
 def get_job_applications(job_id:int,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403, detail = "only recruiter can see the job applications")
 
     job =(db.query(Jobs).filter(Jobs.id == job_id).first()) 
@@ -112,7 +113,7 @@ def get_job_applications(job_id:int,db:Session = Depends(get_db),current_user = 
 @router.patch("/application/{application_id}",response_model = ApplicationResponse) 
 
 def update_application(application_id:int,application_update:UpdateApplicationStatus,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403, detail = "You are not authorized to update the application.") 
     application = (db.query(Application).filter(Application.id == application_id).first())
     if not application:
@@ -129,7 +130,7 @@ def update_application(application_id:int,application_update:UpdateApplicationSt
 @router.patch("/application/{application_id}/withdraw") 
 
 def withdraw_application(application_id:int,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403,detail = "Only Applicants can withdrawn the applications.")
     application = (db.query(Application).filter(Application.id == application_id).first())
     if not application:

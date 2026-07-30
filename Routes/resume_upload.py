@@ -6,17 +6,18 @@ from models.application import Application
 from sqlalchemy.orm import Session 
 from dependencies.auth_dependency import get_current_user
 from database.dependency import get_db
+from schemas.user import UserRole
 from fastapi import APIRouter,Depends, HTTPException ,File, UploadFile 
 from schemas.applicant_profile import (ApplicantProfileBase,ApplicantProfileCreate,
                                        UpdateApplicantProfile,ApplicantProfileResponse,ResumeUploadResponse) 
 from services.file_validator import validate_resume
 
-router = APIRouter(prefix="/resume",tags=["Resume"])
+router = APIRouter(prefix="/resume",tags=["Resume"]) 
 
 @router.post("/upload-resume",response_model = ResumeUploadResponse)
 
 def upload_resume(file:UploadFile = File(...),db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403, detail = "Only applicants can upload their Resume.")
     profile = (db.query(ApplicantProfile).filter(ApplicantProfile.user_id == current_user.id).first())
     if not profile:
@@ -62,7 +63,7 @@ def delete_uploaded_resume(
     current_user=Depends(get_current_user)
 ):
 
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(
             status_code=403,
             detail="Only applicants can delete their resume."
@@ -129,7 +130,7 @@ def get_resume(
     current_user=Depends(get_current_user)
 ):
 
-    if current_user.role != "applicant":
+    if current_user.role != UserRole.applicant:
         raise HTTPException(
             status_code=403,
             detail="Only applicants can access their resume."

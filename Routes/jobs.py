@@ -5,6 +5,7 @@ from dependencies.auth_dependency import get_current_user
 from sqlalchemy.orm import Session 
 from models.jobs import Jobs
 from schemas.job import JobCreate,JobResponse,JobUpdate,FeatureJob,PaginatedJobResponse
+from schemas.user import UserRole
 from database.dependency import get_db
 from datetime import datetime
 from services.job_services import get_jobs
@@ -15,7 +16,7 @@ router = APIRouter(prefix="/jobs",tags=["Jobs"])
 
 def create_jobs(job_data:JobCreate,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
 
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403,detail="Only Recruiter Can Post Jobs")
     
     new_jobs = Jobs(
@@ -69,7 +70,7 @@ def get_job_by_id(id:int,db:Session = Depends(get_db)):
 
 @router.put("/{job_id}",response_model = JobResponse)
 def update_jobs(job_id:int, job_data:JobUpdate,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403,detail = "Only Recruiter Can Update Jobs.")
     update_jobs = (db.query(Jobs).filter(Jobs.id == job_id,Jobs.is_active == True).first()) 
     if not update_jobs:
@@ -88,7 +89,7 @@ def update_jobs(job_id:int, job_data:JobUpdate,db:Session = Depends(get_db),curr
 
 @router.patch("/{job_id}/feature",response_model = JobResponse)
 def featured_jobs(job_id:int,job_data:FeatureJob,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403,detail = "Only Recruiter Can Featured Jobs.")
     job = (db.query(Jobs).filter(Jobs.id == job_id, Jobs.is_active == True).first())
     if not job:
@@ -117,7 +118,7 @@ def get_featured_jobs(db: Session = Depends(get_db),current_user = Depends(get_c
 
 @router.delete("/{job_id}") 
 def delete_jobs(job_id:int,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
-    if current_user.role != "recruiter":
+    if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403,detail = "Only Recruiter can Delete Jobs.")
     delete_job = (db.query(Jobs).filter(Jobs.id == job_id,Jobs.is_active == True).first()) 
     if not delete_job:
