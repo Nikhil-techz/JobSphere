@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel , ConfigDict
 from datetime import datetime
 from schemas.job import JobResponse
 
@@ -12,7 +12,7 @@ class SavedJobResponse(BaseModel):
     saved_at:datetime
 
     class Config:
-        from_attributes = True
+         model_config = ConfigDict(from_attributes=True)
 
 class SavedJobList(BaseModel):
     id:int

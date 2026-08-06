@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 class ApplicantProfileBase(BaseModel):
     full_name:str
@@ -31,7 +31,5 @@ class ResumeUploadResponse(BaseModel):
 class ApplicantProfileResponse(ApplicantProfileBase):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = ConfigDict(from_attributes=True)
     

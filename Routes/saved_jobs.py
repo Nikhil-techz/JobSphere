@@ -15,7 +15,7 @@ def create_save_jobs(
 ):
     return save_job(
         db = db,
-        current_use = current_user,
+        current_user = current_user,
         job_id = job_id
 
 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel , ConfigDict
 from typing import Optional
 
 class RecruiterProfileBase(BaseModel):
@@ -24,6 +24,4 @@ class RecruiterProfileUpdate(BaseModel):
 class RecruiterProfileResponse(RecruiterProfileBase):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }    
+    model_config =  model_config = ConfigDict(from_attributes=True)

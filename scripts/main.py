@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from database.db import engine, Base
 from Routes import (
     user,auth,jobs,application,applicant_profile, 
-    recruiter_profile,resume_upload,saved_jobs
+    recruiter_profile,resume_upload,saved_jobs,
+    dashboard
 
     )
 import database.base 
@@ -24,14 +25,15 @@ app.add_middleware(
 )
 
 Base.metadata.create_all(bind=engine)
-app.include_router(user.router,prefix="/users",tags=["Users"])
-app.include_router(auth.router,prefix="/auth",tags=["Auth"]) 
+app.include_router(user.router)
+app.include_router(auth.router) 
 app.include_router(jobs.router)
 app.include_router(application.router) 
 app.include_router(applicant_profile.router)
 app.include_router(recruiter_profile.router)
 app.include_router(resume_upload.router) 
 app.include_router(saved_jobs.router)
+app.include_router(dashboard.router) 
 
 
 @app.get("/")

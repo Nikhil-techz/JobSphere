@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends, HTTPException 
+from fastapi import APIRouter,Depends, HTTPException , BackgroundTasks
 from sqlalchemy.orm import Session 
 from models.application import Application
 from models.applicant_profile import ApplicantProfile
@@ -17,17 +17,20 @@ from schemas.application import (
 
 from dependencies.auth_dependency import get_current_user
 from database.dependency import get_db
+from services.Email_service import application_submitted_email , send_application_status_email
 
 
 router = APIRouter(prefix="/Applications",tags=["Applications"])
 
 @router.post("/",response_model= ApplicationResponse,status_code = 201)
 
-def create_application(
+async def create_application(
     application_create: ApplicationCreate,
+    background_tasks:BackgroundTasks,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
+
     if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403, detail = "only applicants can apply for job")
     existing_job = (db.query(Jobs).filter(Jobs.id == application_create.job_id).first()) 
@@ -67,6 +70,14 @@ def create_application(
     db.add(new_application)
     db.commit()
     db.refresh(new_application)
+    background_tasks.add_task(
+        application_submitted_email,
+        current_user.email,
+        current_user.name,
+        Jobs.title,
+        Jobs.company
+
+    )
     return new_application 
 
 
@@ -112,12 +123,18 @@ def get_job_applications(job_id:int,db:Session = Depends(get_db),current_user = 
 
 @router.patch("/application/{application_id}",response_model = ApplicationResponse) 
 
-def update_application(application_id:int,application_update:UpdateApplicationStatus,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
+async def update_application(
+    application_id:int,
+    application_update:UpdateApplicationStatus,
+    background_tasks:BackgroundTasks,
+    db:Session = Depends(get_db),current_user = Depends(get_current_user)):
     if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403, detail = "You are not authorized to update the application.") 
     application = (db.query(Application).filter(Application.id == application_id).first())
     if not application:
         raise HTTPException(status_code = 404, detail = "Application with id {application_id} does not exists.") 
+    applicant = (db.query(Users).filter(Users.id == application.applicant_id).first()  
+)
     job = (db.query(Jobs).filter(Jobs.id == application.job_id).first()) 
     
     if job.recruiter_id != current_user.id:
@@ -125,6 +142,15 @@ def update_application(application_id:int,application_update:UpdateApplicationSt
     application.status = application_update.status 
     db.commit()
     db.refresh(application)
+    background_tasks.add_task(
+        send_application_status_email,
+        applicant.email,
+        applicant.name,
+        job.title,
+        application.status.value
+        
+
+    )
     return application 
   
 @router.patch("/application/{application_id}/withdraw") 

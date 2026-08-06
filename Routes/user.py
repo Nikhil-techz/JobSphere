@@ -1,28 +1,51 @@
-from fastapi import APIRouter, Depends, HTTPException 
+from fastapi import APIRouter, Depends, HTTPException , BackgroundTasks
+from config.settings import settings
 from sqlalchemy.orm import Session 
 from models.user import Users 
 from schemas.user import UserCreate
 from config.security import hash_password 
 from database.dependency import get_db
+from services.Email_service import  send_email_verification_email
+from services.verification_service import generate_verification_token, verification_token_expiry, hash_verification_token
 
-router = APIRouter()
+router = APIRouter(prefix = "/auth",tags = ["Authentication"])
 
 @router.post("/register")
-def register(user_data:UserCreate, db:Session = Depends(get_db)):
-    print("Received role:", user_data.role)
+async def register(
+    user_data:UserCreate,
+    background_tasks:BackgroundTasks,
+    db:Session = Depends(get_db)):
+    
     existing_user = db.query(Users).filter(Users.email == user_data.email).first()
     if existing_user:
         raise HTTPException(status_code= 400,detail="Email already registered")
+    if user_data.name.lower() in user_data.password.lower():
+        raise HTTPException(status_code = 400, detail = "Password cannot contain your username.") 
     
-    hashed_password = hash_password(user_data.password)
+    hashed_password = hash_password(user_data.password) 
+    raw_token = generate_verification_token()
+    hashed_token = hash_verification_token(raw_token)
+    token_expiry = verification_token_expiry()
+    verification_link = (
+    f"{settings.BACKEND_URL}/auth/verify-email?token={raw_token}"
+)
     new_user_created = Users(
         name = user_data.name,
         email = user_data.email,
         password = hashed_password,
-        role = user_data.role
+        role = user_data.role,
+        verification_token = hashed_token,
+        verification_token_expiry = token_expiry
+
     )
 
     db.add(new_user_created)
     db.commit()
     db.refresh(new_user_created)
-    return {"message":"User Registered Successfully"} 
+    background_tasks.add_task(
+        send_email_verification_email,
+        user_data.email,
+        user_data.name,
+        verification_link
+    )
+    return {"message":"Registration successful. Please check your email to verify your account."} 
