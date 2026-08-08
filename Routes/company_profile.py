@@ -5,7 +5,7 @@ from dependencies.auth_dependency import get_current_user
 from services.company_service import create_company_detail, get_company_detail, get_all_company_detail, update_company_detail 
 from schemas.company_profile import CompanyCreate, CompanyResponse , CompanyUpdate, PaginatedCompanyResponse 
 
-router = APIRouter(prefix = "/company",tags = ["company"]) 
+router = APIRouter(prefix="/company",tags = ["company"]) 
 
 
 
@@ -17,21 +17,9 @@ def create_company(
         current_user = Depends(get_current_user)
 ):
     return create_company_detail(
-        company_data,
-        db,
-        current_user
-    )
-
-
-@router.get("/{company_id}", response_model = CompanyResponse) 
-
-def get_company(
-    company_id:int,
-    db:Session = Depends(get_db)
-): 
-    return get_company_detail(
-        company_id,
-        db
+        db = db,
+        user_data = company_data,
+        current_user = current_user
     )
 
 @router.get("/companies", response_model = PaginatedCompanyResponse) 
@@ -52,16 +40,30 @@ def get_all_company(
     )
 
 
-@router.patch("/",response_model = CompanyResponse)
+@router.get("/{company_id}", response_model = CompanyResponse) 
+
+def get_company(
+    company_id:int,
+    db:Session = Depends(get_db)
+): 
+    return get_company_detail(
+        company_id,
+        db
+    )
+
+
+
+
+@router.patch("/me",response_model = CompanyUpdate)
 
 def update_company(
-    company_id:int,
+    
     data:CompanyUpdate,
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
     return update_company_detail(
-        company_id = company_id,
+        
         company_data = data,
         db = db,
         current_user = current_user

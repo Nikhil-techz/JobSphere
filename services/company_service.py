@@ -25,6 +25,7 @@ def create_company_detail(
     db.add(new_company_created)
     db.commit()
     db.refresh(new_company_created) 
+    return  new_company_created
 
 
 def get_company_detail(
@@ -33,7 +34,7 @@ def get_company_detail(
         ):
     company = (db.query(Company).filter(Company.id == company_id).first())
     if not company:
-        raise HTTPException(status_code = 404 , detail = f"company with {company_id} does not exists.")
+        raise HTTPException(status_code = 404 , detail = f"company with id {company_id} does not exists.")
     return company 
 
 def get_all_company_detail(
@@ -58,16 +59,16 @@ def get_all_company_detail(
     )
 
 def update_company_detail(
-        company_id:int,
+        
         company_data,
         db:Session,
         current_user
         ): 
     if current_user.role != UserRole.recruiter:
         raise HTTPException(status_code = 403, detail = "only recruiter can update the company detail.")
-    company = (db.query(Company).filter(Company.id == company_id).first())
+    company = (db.query(Company).filter(Company.recruiter_id == current_user.id).first()) 
     if not company:
-        raise HTTPException(status_code =404,detail = "company not found.")
+        raise HTTPException(status_code =404,detail = "company profile not found.")
     if company.recruiter_id != current_user.id:
         raise HTTPException(status_code = 403, detail = "You are not authorized to update this company." )
 
