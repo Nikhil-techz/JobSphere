@@ -26,6 +26,7 @@ class Users(Base):
     recruiter_profile = relationship("RecruiterProfile",back_populates="user",uselist=False,cascade="all, delete-orphan",)
 
     saved_jobs = relationship("SavedJobs", back_populates="applicant") 
+    company = relationship("Company", back_populates = "recruiter")
     
     
     

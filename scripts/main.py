@@ -4,7 +4,7 @@ from database.db import engine, Base
 from Routes import (
     user,auth,jobs,application,applicant_profile, 
     recruiter_profile,resume_upload,saved_jobs,
-    dashboard
+    dashboard, company_profile
 
     )
 import database.base 
@@ -34,6 +34,7 @@ app.include_router(recruiter_profile.router)
 app.include_router(resume_upload.router) 
 app.include_router(saved_jobs.router)
 app.include_router(dashboard.router) 
+app.include_router(company_profile.router)
 
 
 @app.get("/")

@@ -13,6 +13,8 @@ from models.jobs import Jobs
 from models.application import Application
 from models.applicant_profile import ApplicantProfile
 from models.recruiter_profile import RecruiterProfile
+from models.saved_jobs import SavedJobs
+from models.company_profile import Company
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
