@@ -10,6 +10,7 @@ class Jobs(Base):
     title = Column(String,nullable=False)
     description = Column(String)
     company = Column(String,nullable=False)
+    company_id = Column(Integer,ForeignKey("companies.id"),nullable = False)
     location = Column(String,nullable=False)
     salary = Column(String,nullable=False)
     experience_level = Column(String,nullable=False)
