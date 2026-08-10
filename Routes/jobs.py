@@ -38,6 +38,7 @@ def create_jobs(job_data:JobCreate,db:Session = Depends(get_db),current_user = D
 @router.get("/",response_model = PaginatedJobResponse) 
 def get_all_jobs(
     db:Session = Depends(get_db),
+    current_user = Depends(get_current_user),
     title: str | None = None,
     company: str | None = None,
     location: str | None = None,
@@ -46,8 +47,9 @@ def get_all_jobs(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100)
     ):
+    if current_user.role != UserRole.applicant:
+        raise HTTPException(status_code = 403, detail = "Only applicant can access jobs.")
 
-    # jobs = (db.query(Jobs).filter(Jobs.is_active == True).all()) 
     return get_jobs(
         db = db,
         title=title,
@@ -61,7 +63,14 @@ def get_all_jobs(
 
 
 @router.get("/{id}",response_model = JobResponse)
-def get_job_by_id(id:int,db:Session = Depends(get_db)):
+def get_job_by_id(
+    id:int,
+    db:Session = Depends(get_db),
+    current_user = Depends(get_current_user)):
+    if current_user.role != UserRole.applicant:
+        raise HTTPException(status_code = 403, detail = "Only applicant can access jobs.")
+
+
     jobs = (db.query(Jobs).filter(Jobs.id == id,Jobs.is_active == True).first()) 
     if not jobs:
         raise HTTPException(status_code = 404,detail=f"Job With ID {id} not found")
