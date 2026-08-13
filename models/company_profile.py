@@ -23,8 +23,8 @@ class Company(Base):
 
     logo = Column(String(500), nullable=True)
 
-    created_at = Column(DateTime,default = datetime.utcnow, nullable = False)
-    updated_at = Column(DateTime,default = datetime.utcnow, onupdate = datetime.utcnow,nullable = False)
+    created_at = Column(DateTime(timezone=True),default = datetime.utcnow, nullable = False)
+    updated_at = Column(DateTime(timezone=True),default = datetime.utcnow, onupdate = datetime.utcnow,nullable = False)
 
     recruiter = relationship("Users", back_populates = "company")
     jobs = relationship("Jobs",back_populates ="company", cascade = "all , delete") 

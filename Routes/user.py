@@ -19,8 +19,12 @@ async def register(
     existing_user = db.query(Users).filter(Users.email == user_data.email).first()
     if existing_user:
         raise HTTPException(status_code= 400,detail="Email already registered")
-    if user_data.name.lower() in user_data.password.lower():
-        raise HTTPException(status_code = 400, detail = "Password cannot contain your username.") 
+    name_parts = user_data.name.lower().split()
+    password = user_data.password.lower()
+    for part in name_parts:
+        if len(part) >= 3 and part in password:
+            raise HTTPException(status_code=400, detail="Password cannot contain your name.")
+     
     
     hashed_password = hash_password(user_data.password) 
     raw_token = generate_verification_token()

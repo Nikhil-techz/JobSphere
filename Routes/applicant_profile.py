@@ -6,8 +6,12 @@ from models.applicant_profile import ApplicantProfile
 from schemas.user import UserRole
 from schemas.applicant_profile import (ApplicantProfileBase,ApplicantProfileCreate,
                                        UpdateApplicantProfile,ApplicantProfileResponse,ResumeUploadResponse) 
+from schemas.dashboard import ApplicantDashboardResponse 
+from services.applicant_dashboard import applicant_dashboard
 
-router = APIRouter(prefix="/applicant-profile",tags=["Applicant Profile"])
+
+
+router = APIRouter(prefix="/applicant",tags=["Applicant Profile"])
 
 @router.post("/",response_model = ApplicantProfileResponse,status_code = 201)
 
@@ -52,6 +56,15 @@ def update_applicant_profile(update_profile:UpdateApplicantProfile,db:Session = 
     db.commit()
     db.refresh(profile)
     return profile
-     
 
+
+@router.get("/dashboard", response_model = ApplicantDashboardResponse)
+def get_applicant_dashboard(
+    db:Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return applicant_dashboard(
+        db = db,
+        current_user = current_user
+    )
 

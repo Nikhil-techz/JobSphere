@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     MAIL_SSL_TLS: bool
     MAIL_VALIDATE_CERTS: bool = True 
 
+    # account deletion 
+    ACCOUNT_DELETION_GRACE_DAYS: int = 7
+
 
 
 

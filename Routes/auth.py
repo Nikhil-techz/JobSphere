@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from datetime import datetime, timezone
+from fastapi import Response
+from datetime import datetime, timezone, timedelta
 # from fastapi.security import OAuth2PasswordRequestForm
 from config.security import create_access_token 
+from config.settings import settings
 from dependencies.auth_dependency import get_current_user
 from sqlalchemy.orm import Session
 from models.user import Users
-from schemas.user import UserLogin, ForgotPasswordRequest,ChangePassword, ResetPasswordRequest
+from schemas.user import UserLogin, ForgotPasswordRequest,ChangePassword, ResetPasswordRequest, DeleteAccountRequest
 from config.security import verify_password, hash_password
 from config.settings import settings
 from database.dependency import get_db
@@ -16,7 +18,10 @@ router = APIRouter(prefix= "/auth", tags = ["Authentication"])
 
 
 @router.post("/login")
-async def login(login_data:UserLogin,db:Session = Depends(get_db)):
+async def login(
+    login_data:UserLogin,
+    response:Response,
+    db:Session = Depends(get_db)):
     user = db.query(Users).filter(Users.email == login_data.email).first()
     if user is None:
         raise HTTPException(status_code=401,detail = "Invalid Credentials")
@@ -27,12 +32,33 @@ async def login(login_data:UserLogin,db:Session = Depends(get_db)):
         "sub": str(user.id),
         "role": user.role
         }) 
-    
-    
-    return  { 
-        "access_token":token ,
-        "token_type":  "bearer"
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=False,      # True in production with HTTPS
+        samesite="lax",
+        max_age=3600,
+        path="/"
+    )
+
+    return {
+        "message": "Login successful"
     }
+    
+
+@router.post("/logout")
+async def logout(response: Response):
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=False,  # True in production HTTPS
+        samesite="lax"
+    )
+
+    return {"message": "Logged out successfully"}
+    
+
 
     
 @router.get("/profile")
@@ -186,4 +212,78 @@ async def verify_reset_token(
 
     return {
         "message": "Reset token is valid."
+    }
+
+
+@router.post("/account/delete-request")
+def request_account_deletion(
+    request: DeleteAccountRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    # 1. Check whether deletion has already been requested
+    if current_user.is_deletion_requested:
+        raise HTTPException(
+            status_code=400,
+            detail="Account deletion has already been requested.",
+        )
+
+    # 2. Verify the user's password
+    if not verify_password(
+        request.password,
+        current_user.password
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect password.",
+        )
+
+    # 3. Get current UTC time
+    now = datetime.now(timezone.utc)
+
+    # 4. Calculate deletion date
+    deletion_date = (
+        now + timedelta(
+            days=settings.ACCOUNT_DELETION_GRACE_DAYS
+        )
+    )
+
+    # 5. Mark account for deletion
+    current_user.is_deletion_requested = True
+    current_user.deletion_requested_at = now
+    current_user.deletion_scheduled_for = deletion_date
+
+    db.commit()
+    db.refresh(current_user)
+
+    return {
+        "message": "Account deletion has been scheduled.",
+        "deletion_period_days": settings.ACCOUNT_DELETION_GRACE_DAYS,
+        "deletion_requested_at": current_user.deletion_requested_at,
+        "deletion_scheduled_for": current_user.deletion_scheduled_for,
+    }
+
+
+@router.post("/account/cancel-deletion")
+def cancel_account_deletion(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    # Check whether deletion was requested
+    if not current_user.is_deletion_requested:
+        raise HTTPException(
+            status_code=400,
+            detail="No account deletion is currently scheduled.",
+        )
+
+    # Cancel deletion
+    current_user.is_deletion_requested = False
+    current_user.deletion_requested_at = None
+    current_user.deletion_scheduled_for = None
+
+    db.commit()
+    db.refresh(current_user)
+
+    return {
+        "message": "Account deletion has been cancelled successfully."
     }

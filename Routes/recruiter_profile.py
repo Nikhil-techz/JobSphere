@@ -10,8 +10,10 @@ from schemas.recruiter_profile import(
     RecruiterProfileUpdate,
     RecruiterProfileResponse
 )
+from services.recruiter_dashboard import recruiter_dashboard
+from schemas.dashboard import  RecruiterDashboardResponse
 
-router = APIRouter(prefix="/recruiter-profile",tags=["Recruiter Profile"])
+router = APIRouter(prefix="/recruiter",tags=["Recruiter Profile"])
 
 @router.post("/",response_model = RecruiterProfileResponse,status_code = 201)
 
@@ -39,9 +41,9 @@ def get_recruiter_profile(db:Session = Depends(get_db),current_user = Depends(ge
 
 @router.patch("/",response_model = RecruiterProfileResponse)
 
-def update_applicant_profile(update_profile:RecruiterProfileUpdate,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
+def update_recruiter_profile(update_profile:RecruiterProfileUpdate,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
     if current_user.role != UserRole.recruiter:
-        raise HTTPException(status_code = 403, detail ="Only applicants can update their profiles.")
+        raise HTTPException(status_code = 403, detail ="Only recruiter can update their profiles.")
     
     profile = (db.query(RecruiterProfile).filter(RecruiterProfile.user_id == current_user.id).first())
     if not profile:
@@ -53,3 +55,16 @@ def update_applicant_profile(update_profile:RecruiterProfileUpdate,db:Session = 
     db.commit()
     db.refresh(profile)
     return profile 
+
+
+
+@router.get("/dashboard",response_model = RecruiterDashboardResponse)
+
+def get_recruiter_dashboard(
+    db:Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return recruiter_dashboard(
+        db = db,
+        current_user = current_user
+    )

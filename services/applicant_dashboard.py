@@ -27,7 +27,7 @@ def applicant_dashboard(
     return ApplicantDashboardResponse(
         total_applications = total_applications,
         under_review= under_review,
-        shortlistd = shortlisted,
+        shortlisted = shortlisted,
         rejected = rejected,
         saved_jobs = saved_jobs
 

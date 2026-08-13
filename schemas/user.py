@@ -67,3 +67,6 @@ class ResetPasswordRequest(BaseModel):
 
 class EmailRequest(BaseModel):
     email:List[EmailStr]
+
+class DeleteAccountRequest(BaseModel):
+    password: str

@@ -9,9 +9,23 @@ function Navbar() {
     setMobileMenuOpen(false);
   }
 
+  function handleSignUpClick() {
+    closeMobileMenu();
+
+    const rolesSection = document.getElementById("role-selection");
+
+    if (rolesSection) {
+      rolesSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }
+
   return (
-    <nav className="border-b border-gray-200 bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+    <nav className="border-b border-gray-100 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Navbar Header */}
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link
@@ -38,6 +52,7 @@ function Navbar() {
               Companies
             </Link>
 
+            {/* Login */}
             <Link
               to="/login"
               className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-100"
@@ -45,12 +60,14 @@ function Navbar() {
               Login
             </Link>
 
-            <Link
-              to="/register"
+            {/* Sign Up */}
+            <button
+              type="button"
+              onClick={handleSignUpClick}
               className="rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700"
             >
               Sign Up
-            </Link>
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -89,6 +106,7 @@ function Navbar() {
                 Companies
               </Link>
 
+              {/* Mobile Login */}
               <Link
                 to="/login"
                 onClick={closeMobileMenu}
@@ -97,13 +115,14 @@ function Navbar() {
                 Login
               </Link>
 
-              <Link
-                to="/register"
-                onClick={closeMobileMenu}
+              {/* Mobile Sign Up */}
+              <button
+                type="button"
+                onClick={handleSignUpClick}
                 className="rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700"
               >
                 Sign Up
-              </Link>
+              </button>
             </div>
           </div>
         )}

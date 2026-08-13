@@ -31,5 +31,7 @@ class ResumeUploadResponse(BaseModel):
 class ApplicantProfileResponse(ApplicantProfileBase):
     id: int
 
+
+
     model_config = ConfigDict(from_attributes=True)
     

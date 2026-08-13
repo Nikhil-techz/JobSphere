@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 function RoleSelection() {
   return (
-    <section className="bg-gray-50 py-14 sm:py-16">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section id="role-selection">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
@@ -34,7 +34,8 @@ function RoleSelection() {
             </p>
 
             <Link
-              to="/jobs"
+              to="/register"
+              state={{ role: "applicant" }}
               className="mt-5 inline-flex w-full justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700 sm:mt-6 sm:w-auto"
             >
               Find Jobs
@@ -58,6 +59,7 @@ function RoleSelection() {
 
             <Link
               to="/register"
+              state={{ role: "recruiter" }}
               className="mt-5 inline-flex w-full justify-center rounded-lg border border-violet-200 bg-violet-50 px-5 py-2.5 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100 sm:mt-6 sm:w-auto"
             >
               Post a Job

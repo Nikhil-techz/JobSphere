@@ -13,9 +13,13 @@ class Users(Base):
     role = Column(String,nullable=False) 
     is_verified = Column(Boolean,default = False,nullable = False)
     verification_token = Column(String,unique = True,nullable= True) 
-    verification_token_expiry = Column(DateTime,nullable = True)
+    verification_token_expiry = Column(DateTime(timezone=True),nullable = True)
     password_reset_token = Column(String(255), nullable=True)
-    password_reset_token_expiry = Column(DateTime, nullable=True)
+    password_reset_token_expiry = Column(DateTime(timezone=True), nullable=True)
+    is_deletion_requested = Column( Boolean,default=False,nullable=False)
+
+    deletion_requested_at = Column(DateTime,nullable=True)
+    deletion_scheduled_for = Column(DateTime, nullable=True)
     
     applications = relationship("Application",back_populates="user",cascade="all,delete")  
 
