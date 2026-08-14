@@ -4,13 +4,11 @@ from models.application import Application
 from models.applicant_profile import ApplicantProfile
 from models.jobs import Jobs
 from models.user import Users
-from schemas.user import UserRole
+from models.user import UserRole
 from schemas.application import (
     ApplicationStatus,
-    ApplicationBase,
     ApplicationCreate,
     ApplicationResponse,
-    MyApplicationResponse,
     RecruiterApplicationResponse,
     UpdateApplicationStatus,
 ) 
@@ -62,7 +60,6 @@ async def create_application(
     new_application = Application(
         applicant_id=current_user.id,
         job_id=application_create.job_id,
-        status=ApplicationStatus.APPLIED,
         resume_url=applicant_profile.resume_url,
         resume_public_id=applicant_profile.resume_public_id
     )

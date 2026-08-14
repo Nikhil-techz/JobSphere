@@ -7,7 +7,7 @@ def get_jobs(
     title: str | None = None,
     company: str | None = None,
     location: str | None = None,
-    experience_level: int | None = None,
+    experience_level: str | None = None,
     sort: str | None = None,
     page:int = 1 , 
     limit:int = 10

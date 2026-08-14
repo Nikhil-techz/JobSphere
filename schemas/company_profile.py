@@ -22,7 +22,7 @@ class Industry(str, Enum):
     CONSULTING = "Consulting"
     OTHER = "Other"
 
-class CompanyCreate(BaseModel):
+class CompanyBase(BaseModel):
     name:str
     description:str 
     website:Optional[str] 
@@ -31,6 +31,8 @@ class CompanyCreate(BaseModel):
     location:str 
     logo:Optional[str] = None
 
+class CompanyCreate(CompanyBase):
+    pass
 class CompanyUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
@@ -40,15 +42,9 @@ class CompanyUpdate(BaseModel):
     location: Optional[str] = None
     logo: Optional[str] = None
 
-class CompanyResponse(BaseModel):
+class CompanyResponse(CompanyBase):
     id: int
-    name: str
-    description: str
-    website: HttpUrl | None = None
-    industry: Industry
-    company_size: CompanySize
-    location: str
-    logo: str | None = None 
+    
 
     model_config = ConfigDict(from_attributes=True)
 

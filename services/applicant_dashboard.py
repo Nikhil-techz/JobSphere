@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models.application import Application
-from models.applicant_profile import ApplicantProfile
 from models.saved_jobs import SavedJobs
 from schemas.user import UserRole
 from schemas.application import ApplicationStatus
@@ -17,7 +16,7 @@ def applicant_dashboard(
 
     total_applications = (db.query(Application).filter(Application.applicant_id == current_user.id).count()) 
     under_review = (db.query(Application).filter(Application.applicant_id == current_user.id,
-        Application.status == ApplicationStatus.UNDER_REVIEW).count())
+        Application.status == ApplicationStatus.REVIEWING).count())
     shortlisted = (db.query(Application).filter(Application.applicant_id == current_user.id,
         Application.status == ApplicationStatus.SHORTLISTED).count()) 
     rejected = (db.query(Application).filter(Application.applicant_id == current_user.id,

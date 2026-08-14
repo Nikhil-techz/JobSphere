@@ -1,11 +1,9 @@
 from pydantic import BaseModel, EmailStr, field_validator, Field , ConfigDict
 from utils.password_validator import validate_password
-from enum import Enum
-from typing import Optional , List
+from typing import Optional 
+from models.user import UserRole
 
-class UserRole(str,Enum):
-    applicant = "applicant"
-    recruiter = "recruiter"
+
     
 class UserBase(BaseModel):
     name: str
@@ -14,7 +12,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-    role:UserRole 
+    role:UserRole = UserRole.applicant
     @field_validator("password")
     @classmethod
     def validate_user_password(cls, value):
@@ -65,8 +63,6 @@ class ResetPasswordRequest(BaseModel):
     def validate_user_password(cls, value):
                 return validate_password(value) 
 
-class EmailRequest(BaseModel):
-    email:List[EmailStr]
 
 class DeleteAccountRequest(BaseModel):
     password: str

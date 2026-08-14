@@ -1,17 +1,16 @@
 from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel , ConfigDict
-from typing import Optional
+
 
 
 
 class ApplicationStatus(str, Enum):
-    APPLIED = "Applied"
-    UNDER_REVIEW = "Under Review"
-    SHORTLISTED = "Shortlisted"
-    REJECTED = "Rejected"
-    HIRED = "Hired"
-    WITHDRAWN = "Withdrawn"
+    PENDING = "pending"
+    REVIEWING = "reviewing"
+    SHORTLISTED = "shortlisted"
+    REJECTED = "rejected"
+    HIRED = "hired"
 
 class ApplicationBase(BaseModel):
     job_id: int
@@ -23,29 +22,14 @@ class ApplicationCreate(ApplicationBase):
 
 class ApplicationResponse(ApplicationBase):
     id: int
-    applicant_id: int
+    # applicant_id: int
     status: ApplicationStatus
     resume_url:str
-    resume_public_id: Optional[str] = None
     applied_at: datetime
     
 
     model_config = ConfigDict(from_attributes=True)
 
-
-
-
-class MyApplicationResponse(BaseModel):
-    application_id: int
-    job_title: str
-    company: str
-    location: str
-    status: ApplicationStatus
-    applied_at: datetime
-
-    model_config = {
-        "from_attributes": True
-    }
 
 
 class RecruiterApplicationResponse(BaseModel):

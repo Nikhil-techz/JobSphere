@@ -1,10 +1,10 @@
-from fastapi import APIRouter,Depends, HTTPException ,File, UploadFile
+from fastapi import APIRouter,Depends, HTTPException 
 from sqlalchemy.orm import Session 
 from dependencies.auth_dependency import get_current_user
 from database.dependency import get_db
 from models.applicant_profile import ApplicantProfile
-from schemas.user import UserRole
-from schemas.applicant_profile import (ApplicantProfileBase,ApplicantProfileCreate,
+from models.user import UserRole
+from schemas.applicant_profile import (ApplicantProfileCreate,
                                        UpdateApplicantProfile,ApplicantProfileResponse,ResumeUploadResponse) 
 from schemas.dashboard import ApplicantDashboardResponse 
 from services.applicant_dashboard import applicant_dashboard

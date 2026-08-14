@@ -2,8 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models.application import Application
 from models.jobs import Jobs
-from models.recruiter_profile import RecruiterProfile
-from schemas.dashboard import RecruiterDashboardResponse, RecentApplicationResponse
+from schemas.dashboard import RecruiterDashboardResponse
 from schemas.user import UserRole 
 
 def recruiter_dashboard(

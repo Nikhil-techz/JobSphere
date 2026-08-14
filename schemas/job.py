@@ -7,8 +7,8 @@ class JobBase(BaseModel):
     description: str
     company: str
     location:str
-    salary:int
-    experience_level:int
+    salary:str
+    experience_level:str
     skills:str
 
 
@@ -38,8 +38,7 @@ class JobResponse(JobBase):
     is_active:bool
     created_at:datetime
     is_featured: bool
-    featured_until: datetime | None = None
-    featured_priority: int
+   
     class Config:
 
          model_config = ConfigDict(from_attributes=True)

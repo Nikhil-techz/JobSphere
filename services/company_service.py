@@ -29,12 +29,12 @@ def create_company_detail(
 
 
 def get_company_detail(
-        company_id:int,
-        db:Session
+        db:Session,
+        user_id:int
         ):
-    company = (db.query(Company).filter(Company.id == company_id).first())
+    company = (db.query(Company).filter(Company.recruiter_id == user_id ).first())
     if not company:
-        raise HTTPException(status_code = 404 , detail = f"company with id {company_id} does not exists.")
+        raise HTTPException(status_code = 404 , detail = "Company profile not found")
     return company 
 
 def get_all_company_detail(
