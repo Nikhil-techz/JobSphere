@@ -5,7 +5,7 @@ from models.user import Users
 from schemas.user import UserCreate
 from config.security import hash_password 
 from database.dependency import get_db
-from services.Email_service import  send_email_verification_email
+from services.Email_service import  EmailService
 from services.verification_service import generate_verification_token, verification_token_expiry, hash_verification_token
 
 router = APIRouter(prefix = "/auth",tags = ["Authentication"])
@@ -47,7 +47,7 @@ async def register(
     db.commit()
     db.refresh(new_user_created)
     background_tasks.add_task(
-        send_email_verification_email,
+        EmailService.send_email_verification_email,
         user_data.email,
         user_data.name,
         verification_link

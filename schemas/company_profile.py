@@ -44,6 +44,7 @@ class CompanyUpdate(BaseModel):
 
 class CompanyResponse(CompanyBase):
     id: int
+   
     
 
     model_config = ConfigDict(from_attributes=True)

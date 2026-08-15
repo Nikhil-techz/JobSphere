@@ -15,148 +15,155 @@ con = ConnectionConfig(
     TEMPLATE_FOLDER = BASE_DIR/"email_templates"
 ) 
 
-async def send_welcome_email(
-        recipient_email:str,
-        username:str
-):
-    message = MessageSchema(
-        subject = "Welcome to JobSphere",
-        recipients = [recipient_email],
-        subtype = MessageType.html,
-        template_body = {
+class EmailService: 
+
+    @staticmethod
+    async def send_welcome_email(
+            
+            recipient_email:str,
+            username:str
+            ):
+        
+        message = MessageSchema(
+            subject = "Welcome to JobSphere",
+            recipients = [recipient_email],
+            subtype = MessageType.html,
+            template_body = {
+
                 "username": username
             }
     )
     
 
-    fm = FastMail(con)
-    await fm.send_message(
-        message = message,
-        template_name = "welcome.html",
+        fm = FastMail(con)
+        await fm.send_message(
+            message = message,
+            template_name = "welcome.html",
         
     )
 
 #############################################################################
-
-async def application_submitted_email(
-        recipient_email:str,
-        username:str,
-        Job_title:str,
-        company_name:str
-):
-    message = MessageSchema(
-        subject = "Application Status",
-        recipients = [recipient_email],
-        subtype = MessageType.html,
-        template_body = {
-            "username": username,
-            "job_title":Job_title,
-            "company_name":company_name
+    @staticmethod
+    async def application_submitted_email(
+            recipient_email:str,
+            username:str,
+            Job_title:str,
+            company_name:str
+            ):
+        message = MessageSchema(
+            subject = "Application Status",
+            recipients = [recipient_email],
+            subtype = MessageType.html,
+            template_body = {
+                "username": username,
+                "job_title":Job_title,
+                "company_name":company_name
         }
     )
-    fm = FastMail(con)
-    await fm.send_message(
-        message = message,
-        template_name = "application_confirmation.html"
+        fm = FastMail(con)
+        await fm.send_message(
+            message = message,
+            template_name = "application_confirmation.html"
     )
     
 
 ####################################################################################
+    @staticmethod
+    async def send_reset_password_success(
 
-async def send_reset_password_success(
-    recipient_email: str,
-    username: str
-):
-    message = MessageSchema(
-        subject="Password Reset successfuly",
-        recipients=[recipient_email],
-        subtype=MessageType.html,
-        template_body={
-            "username": username
+        recipient_email: str,
+        username: str
+        ):
+        message = MessageSchema(
+            subject="Password Reset successfuly",
+            recipients=[recipient_email],
+            subtype=MessageType.html,
+            template_body={
+                "username": username
         }
     )
 
-    fm = FastMail(con)
+        fm = FastMail(con)
 
-    await fm.send_message(
-        message=message,
-        template_name="first_login.html"
+        await fm.send_message(
+            message=message,
+            template_name="first_login.html"
     )
 
 ##########################################################################################
-
-async def send_application_status_email(
-    recipient_email: str,
-    username: str,
-    job_title: str,
-    status: str
+    @staticmethod
+    async def send_application_status_email(
+        recipient_email: str,
+        username: str,
+        job_title: str,
+        status: str
 ):
-    message = MessageSchema(
-        subject="Application Status Updated",
-        recipients=[recipient_email],
-        subtype=MessageType.html,
-        template_body={
-            "username": username,
-            "job_title": job_title,
-            "status": status
+        message = MessageSchema(
+            subject="Application Status Updated",
+            recipients=[recipient_email],
+            subtype=MessageType.html,
+            template_body={
+                "username": username,
+                "job_title": job_title,
+                "status": status
         }
     )
 
-    fm = FastMail(con)
+        fm = FastMail(con)
 
-    await fm.send_message(
-        message=message,
-        template_name="application_status.html"
+        await fm.send_message(
+            message=message,
+            template_name="application_status.html"
     )
 
 
 ######################################################################################
-
-async def send_password_reset_email(
-    recipient_email: str,
-    username: str,
-    reset_link: str
-):
-    message = MessageSchema(
-        subject="Reset Your Password",
-        recipients=[recipient_email],
-        subtype=MessageType.html,
-        template_body={
-            "username": username,
-            "reset_link": reset_link
+    @staticmethod
+    async def send_password_reset_email(
+        recipient_email: str,
+        username: str,
+        reset_link: str
+        ):
+        message = MessageSchema(
+            subject="Reset Your Password",
+            recipients=[recipient_email],
+            subtype=MessageType.html,
+            template_body={
+                "username": username,
+                "reset_link": reset_link
         }
     )
 
-    fm = FastMail(con)
+        fm = FastMail(con)
 
-    await fm.send_message(
-        message=message,
-        template_name="reset_password.html"
+        await fm.send_message(
+            message=message,
+            template_name="reset_password.html"
     )
 
 
 ####################################################################################
-
-async def send_email_verification_email(
-    recipient_email: str,
-    username: str,
-    verification_link: str
-):
-    message = MessageSchema(
-        subject="Verify Your Email",
-        recipients=[recipient_email],
-        subtype=MessageType.html,
-        template_body={
-            "username": username,
-            "verification_link": verification_link
+    @staticmethod
+    async def send_email_verification_email(
+        recipient_email: str,
+        username: str,
+        verification_link: str
+        ):
+        message = MessageSchema(
+            subject="Verify Your Email",
+            recipients=[recipient_email],
+            subtype=MessageType.html,
+            template_body={
+                "username": username,
+                "verification_link": verification_link
         }
     )
 
-    fm = FastMail(con)
+        fm = FastMail(con)
 
-    await fm.send_message(
-        message=message,
-        template_name="email_verification.html"
-    )
+        await fm.send_message(
+            message=message,
+            template_name="email_verification.html"
+    ) 
 
     

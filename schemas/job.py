@@ -5,7 +5,6 @@ from datetime import datetime
 class JobBase(BaseModel):
     title: str
     description: str
-    company: str
     location:str
     salary:str
     experience_level:str

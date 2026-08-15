@@ -12,7 +12,7 @@ from config.security import verify_password, hash_password
 from config.settings import settings
 from database.dependency import get_db
 from services.verification_service import generate_verification_token, hash_verification_token, verification_token_expiry
-from services.Email_service import send_welcome_email , send_password_reset_email, send_reset_password_success
+from services.Email_service import  EmailService 
 
 router = APIRouter(prefix= "/auth", tags = ["Authentication"]) 
 
@@ -30,7 +30,7 @@ async def login(
     
     token = create_access_token(data={
         "sub": str(user.id),
-        "role": user.role
+        "role": user.role.value
         }) 
     response.set_cookie(
         key="access_token",
@@ -99,7 +99,7 @@ async def verify_email(
     db.commit()
     
     background_tasks.add_task(
-        send_welcome_email,
+        EmailService.send_welcome_email,
         user.name,
         user.email
 
@@ -129,7 +129,7 @@ async def forgot_password(
 
     reset_url = f"{settings.FRONTEND_URL}/auth/reset-password?token={raw_token}"
     background_tasks.add_task(
-        send_password_reset_email,
+        EmailService.send_password_reset_email,
         user.email,
         user.name,
         reset_url
@@ -169,7 +169,7 @@ async def reset_password(
     
     db.commit()
     background_tasks.add_task(
-        send_reset_password_success,
+        EmailService.send_reset_password_success,
         user.email,
         user.name
 

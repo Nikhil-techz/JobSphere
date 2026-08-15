@@ -2,13 +2,13 @@ from fastapi import APIRouter,Depends
 from sqlalchemy.orm import Session
 from database.dependency import get_db
 from dependencies.auth_dependency import get_current_user
-from services.company_service import create_company_detail, get_company_detail, get_all_company_detail, update_company_detail 
+from services.company_service import CompanyService
 from schemas.company_profile import CompanyCreate, CompanyResponse , CompanyUpdate, PaginatedCompanyResponse 
-from services.recruiter_dashboard import recruiter_dashboard
 from schemas.dashboard import  RecruiterDashboardResponse
 
 router = APIRouter(prefix="/company",tags = ["company"]) 
 
+company_service = CompanyService
 
 
 @router.post("/",response_model = CompanyResponse)
@@ -18,7 +18,7 @@ def create_company(
         db:Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    return create_company_detail(
+    return company_service.create_company_detail(
         db = db,
         user_data = company_data,
         current_user = current_user
@@ -31,7 +31,7 @@ def get_company(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ): 
-    return get_company_detail(
+    return company_service.get_company_detail(
         db = db,
         user_id = current_user.id
 
@@ -47,7 +47,7 @@ def get_all_company(
     company_name:str | None = None,
     industry:str |None = None
 ):
-    return get_all_company_detail (
+    return company_service.get_all_company_detail (
         db = db,
         page = page,
         limit = limit,
@@ -66,7 +66,7 @@ def update_my_company(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return update_company_detail(
+    return company_service.update_company_detail(
         
         company_data = data,
         db = db,
@@ -80,7 +80,7 @@ def get_recruiter_dashboard(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return recruiter_dashboard(
+    return company_service.recruiter_dashboard(
         db = db,
         current_user = current_user
     )
