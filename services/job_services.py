@@ -15,7 +15,7 @@ class JobService:
             current_user
     ):
         if current_user.role != UserRole.recruiter:
-            raise HTTPException(stauts_code = 403, detail = "only recruiter can post jobs." )
+            raise HTTPException(status_code = 403, detail = "only recruiter can post jobs." )
         
         company = (db.query(Company).filter(Company.recruiter_id == current_user.id).first()) 
         if not company:
@@ -48,14 +48,14 @@ class JobService:
             page:int = 1 , 
             limit:int = 10
 ):
-        query = db.query(Jobs).filter(Jobs.is_active.is_(True))
+        query = db.query(Jobs).join(Jobs.company).filter(Jobs.is_active.is_(True)) 
 
         if title:
          
          query = query.filter(Jobs.title.ilike(f"%{title}%"))
 
         if company:
-            query = query.filter(Jobs.company.ilike(f"%{company}%"))
+            query = query.filter(Jobs.company.name.ilike(f"%{company}%"))
 
         if location:
          query = query.filter(Jobs.location.ilike(f"%{location}%"))

@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends, HTTPException , BackgroundTasks
+from fastapi import APIRouter,Depends, BackgroundTasks
 from sqlalchemy.orm import Session 
 from models.application import Application
 from models.user import UserRole
@@ -25,7 +25,7 @@ async def create_application(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return ApplicationService.create_application(
+    return await ApplicationService.create_application(
         application_create=application_create,
         background_tasks=background_tasks,
         db=db,
@@ -76,7 +76,7 @@ async def update_application(
     return ApplicationService.update_application(
         application_id = application_id,
         application_update = application_update,
-        background_tasks = BackgroundTasks,
+        background_tasks = background_tasks,
         db =db,
         current_user = current_user
     )

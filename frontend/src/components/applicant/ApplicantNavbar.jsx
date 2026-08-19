@@ -1,6 +1,9 @@
 import { Menu, Bell, UserCircle } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 function ApplicantNavbar({ onMenuClick }) {
+  const { user } = useAuth();
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white px-4 shadow-sm sm:px-6">
       {/* Left side */}
@@ -43,7 +46,7 @@ function ApplicantNavbar({ onMenuClick }) {
           <UserCircle size={30} className="text-gray-600" />
 
           <span className="hidden text-sm font-medium text-gray-700 sm:block">
-            Applicant
+            {user?.name || "Applicant"}
           </span>
         </button>
       </div>

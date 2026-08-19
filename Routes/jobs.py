@@ -65,6 +65,7 @@ def get_job_by_id(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)):
     return job_service.get_job_by_id(
+        id = id,
         db = db,
         current_user = current_user
     )

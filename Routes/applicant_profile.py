@@ -13,7 +13,7 @@ from services.applicant_dashboard import applicant_dashboard
 
 router = APIRouter(prefix="/applicant",tags=["Applicant Profile"])
 
-@router.post("/",response_model = ApplicantProfileResponse,status_code = 201)
+@router.post("/profile",response_model = ApplicantProfileResponse,status_code = 201)
 
 def create_applicant_profile(applicant_profile:ApplicantProfileCreate,db: Session = Depends(get_db),
     current_user = Depends(get_current_user)):
@@ -22,7 +22,7 @@ def create_applicant_profile(applicant_profile:ApplicantProfileCreate,db: Sessio
 
     existing_profile = (db.query(ApplicantProfile).filter(ApplicantProfile.user_id == current_user.id).first())
     if existing_profile:
-        raise HTTPException(status_code = 404,detail = "applicant profile already exists.")
+        raise HTTPException(status_code = 400,detail = "applicant profile already exists.")
     
     new_profile = ApplicantProfile(user_id = current_user.id,**applicant_profile.model_dump()) 
     db.add(new_profile)
@@ -30,7 +30,7 @@ def create_applicant_profile(applicant_profile:ApplicantProfileCreate,db: Sessio
     db.refresh(new_profile)
     return new_profile 
 
-@router.get("/",response_model = ApplicantProfileResponse)
+@router.get("/profile",response_model = ApplicantProfileResponse)
 
 def get_applicant_profile(db:Session = Depends(get_db),current_user = Depends(get_current_user)):
     if current_user.role != UserRole.applicant:
@@ -40,7 +40,7 @@ def get_applicant_profile(db:Session = Depends(get_db),current_user = Depends(ge
         raise HTTPException(status_code = 404, detail = "profile does not exists.")
     return profile
 
-@router.patch("/",response_model = ApplicantProfileResponse)
+@router.patch("/profile",response_model = ApplicantProfileResponse)
 
 def update_applicant_profile(update_profile:UpdateApplicantProfile,db:Session = Depends(get_db),current_user = Depends(get_current_user)):
     if current_user.role != UserRole.applicant:

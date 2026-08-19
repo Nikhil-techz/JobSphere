@@ -20,12 +20,23 @@ class ApplicationCreate(ApplicationBase):
     pass
 
 
-class ApplicationResponse(ApplicationBase):
+class JobApplicationResponse(BaseModel):
     id: int
-    # applicant_id: int
+    title: str
+    location: str
+    salary: str
+    experience_level: int
+    skills: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ApplicationResponse(BaseModel):
+    id: int
+    
     status: ApplicationStatus
     resume_url:str
     applied_at: datetime
+    job:JobApplicationResponse 
     
 
     model_config = ConfigDict(from_attributes=True)

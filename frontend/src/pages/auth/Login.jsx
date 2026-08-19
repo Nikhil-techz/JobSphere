@@ -16,7 +16,6 @@ function Login() {
     password: "",
   });
 
-  // Store login error message
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
@@ -27,14 +26,12 @@ function Login() {
       [name]: value,
     }));
 
-    // Clear error message when user starts typing again
     setErrorMessage("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Clear previous error
     setErrorMessage("");
 
     try {
@@ -44,20 +41,26 @@ function Login() {
         password: formData.password,
       });
 
-      // Get currently logged-in user's profile
-      await loadUser();
+      // Load logged-in user
+      const loggedInUser = await loadUser();
 
-      // Navigate after successful login
-      navigate("/");
+      console.log("Logged in user:", loggedInUser);
+
+      // Redirect based on role
+      if (loggedInUser?.role === "applicant") {
+        navigate("/applicant/dashboard", { replace: true });
+      } else if (loggedInUser?.role === "recruiter") {
+        navigate("/recruiter/dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (error) {
       console.error("Login failed:", error);
 
-      // Show FastAPI error message
       setErrorMessage(
         error.response?.data?.detail || "Invalid email or password"
       );
 
-      // Hide error message after 3 seconds
       setTimeout(() => {
         setErrorMessage("");
       }, 3000);

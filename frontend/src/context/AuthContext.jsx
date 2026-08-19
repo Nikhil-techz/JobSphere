@@ -1,31 +1,36 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getProfile } from "../services/api";
-import { logoutUser } from "../services/api";
+import { getProfile, logoutUser } from "../services/api";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const isAuthenticated = Boolean(user);
 
-  // Check whether the user is already authenticated
+  // Load currently logged-in user
   const loadUser = async () => {
     try {
       const profile = await getProfile();
 
       setUser(profile);
+
+      return profile;
     } catch (error) {
       setUser(null);
+
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  // Check authentication when the application starts
+  // Check authentication when application starts
   useEffect(() => {
     loadUser();
   }, []);
@@ -38,7 +43,10 @@ export function AuthProvider({ children }) {
       console.error("Logout failed:", error);
     } finally {
       setUser(null);
-      navigate("/login", { replace: true });
+
+      navigate("/login", {
+        replace: true,
+      });
     }
   };
 

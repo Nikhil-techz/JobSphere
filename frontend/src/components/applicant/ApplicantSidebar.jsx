@@ -4,13 +4,16 @@ import {
   Bookmark,
   FileText,
   User,
+  File,
   LogOut,
   X,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 function ApplicantSidebar({ isOpen, onClose }) {
   const { logout } = useAuth();
+
   const menuItems = [
     {
       label: "Dashboard",
@@ -35,7 +38,12 @@ function ApplicantSidebar({ isOpen, onClose }) {
     {
       label: "Profile",
       icon: User,
-      path: "/profile",
+      path: "/applicant/profile",
+    },
+    {
+      label: "Resume",
+      icon: File,
+      path: "/applicant/resume",
     },
   ];
 
@@ -69,7 +77,7 @@ function ApplicantSidebar({ isOpen, onClose }) {
             Job<span className="text-blue-600">Sphere</span>
           </h2>
 
-          {/* Close button - mobile */}
+          {/* Mobile close button */}
           <button
             type="button"
             onClick={onClose}
@@ -86,9 +94,9 @@ function ApplicantSidebar({ isOpen, onClose }) {
             const Icon = item.icon;
 
             return (
-              <a
+              <Link
                 key={item.label}
-                href={item.path}
+                to={item.path}
                 onClick={onClose}
                 className="
                   flex items-center gap-3 rounded-lg px-4 py-3
@@ -99,7 +107,7 @@ function ApplicantSidebar({ isOpen, onClose }) {
               >
                 <Icon size={20} />
                 <span>{item.label}</span>
-              </a>
+              </Link>
             );
           })}
         </nav>

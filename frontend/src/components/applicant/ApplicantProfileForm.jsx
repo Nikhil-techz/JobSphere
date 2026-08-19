@@ -1,7 +1,15 @@
-import { useState } from "react";
-import { createApplicantProfile } from "../../services/api";
+import { useEffect, useState } from "react";
+import {
+  createApplicantProfile,
+  updateApplicantProfile,
+} from "../../services/api";
 
-function ApplicantProfileForm({ onProfileCreated }) {
+function ApplicantProfileForm({
+  initialProfile = null,
+  onProfileCreated,
+  onProfileUpdated,
+  onCancel,
+}) {
   const [formData, setFormData] = useState({
     full_name: "",
     contact: "",
@@ -15,6 +23,23 @@ function ApplicantProfileForm({ onProfileCreated }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const isEditMode = Boolean(initialProfile);
+
+  useEffect(() => {
+    if (initialProfile) {
+      setFormData({
+        full_name: initialProfile.full_name || "",
+        contact: initialProfile.contact || "",
+        location: initialProfile.location || "",
+        experience: initialProfile.experience || "",
+        education: initialProfile.education || "",
+        linkedin: initialProfile.linkedin || "",
+        github: initialProfile.github || "",
+        profile_picture: initialProfile.profile_picture || "",
+      });
+    }
+  }, [initialProfile]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -32,11 +57,36 @@ function ApplicantProfileForm({ onProfileCreated }) {
     setLoading(true);
 
     try {
-      const profile = await createApplicantProfile(formData);
+      let profile;
 
-      onProfileCreated(profile);
+      if (isEditMode) {
+        profile = await updateApplicantProfile(formData);
+
+        if (onProfileUpdated) {
+          onProfileUpdated(profile);
+        }
+      } else {
+        profile = await createApplicantProfile(formData);
+
+        if (onProfileCreated) {
+          onProfileCreated(profile);
+        }
+      }
     } catch (error) {
-      setError(error.response?.data?.detail || "Unable to create profile.");
+      const detail = error.response?.data?.detail;
+
+      if (Array.isArray(detail)) {
+        setError(
+          detail
+            .map((item) => item.msg)
+            .filter(Boolean)
+            .join(", ")
+        );
+      } else {
+        setError(
+          detail || `Unable to ${isEditMode ? "update" : "create"} profile.`
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -46,20 +96,27 @@ function ApplicantProfileForm({ onProfileCreated }) {
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-3xl">
         <div className="rounded-xl border bg-white p-6 shadow-sm sm:p-8">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Create Your Profile
-          </h1>
+          {/* Header */}
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {isEditMode ? "Edit Your Profile" : "Create Your Profile"}
+            </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Complete your applicant profile.
-          </p>
+            <p className="mt-1 text-sm text-gray-500">
+              {isEditMode
+                ? "Update your applicant profile information."
+                : "Complete your applicant profile."}
+            </p>
+          </div>
 
+          {/* Error */}
           {error && (
             <div className="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
             </div>
           )}
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             {/* Full Name */}
             <div>
@@ -191,14 +248,33 @@ function ApplicantProfileForm({ onProfileCreated }) {
               />
             </div>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {loading ? "Creating Profile..." : "Create Profile"}
-            </button>
+            {/* Buttons */}
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 rounded-lg bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading
+                  ? isEditMode
+                    ? "Saving Changes..."
+                    : "Creating Profile..."
+                  : isEditMode
+                  ? "Save Changes"
+                  : "Create Profile"}
+              </button>
+
+              {isEditMode && onCancel && (
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  disabled={loading}
+                  className="flex-1 rounded-lg border border-gray-300 px-5 py-3 font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </form>
         </div>
       </div>

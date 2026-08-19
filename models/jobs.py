@@ -12,7 +12,7 @@ class Jobs(Base):
     company_id = Column(Integer,ForeignKey("companies.id"),nullable = False)
     location = Column(String,nullable=False)
     salary = Column(String,nullable=False)
-    experience_level = Column(String,nullable=False)
+    experience_level = Column(Integer,nullable=False)
     skills = Column(String,nullable= False)
     is_active = Column(Boolean,default = True)
     created_at = Column(DateTime,default = datetime.utcnow)

@@ -1,16 +1,15 @@
-from pydantic import BaseModel , ConfigDict
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
+
 
 class JobBase(BaseModel):
     title: str
     description: str
-    location:str
-    salary:str
-    experience_level:str
-    skills:str
-
-
+    location: str
+    salary: str
+    experience_level: int
+    skills: str
 
 
 class JobCreate(JobBase):
@@ -21,10 +20,10 @@ class JobUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     company: Optional[str] = None
-    location:Optional[str] = None
-    salary: Optional[int] = None 
-    experience_level:Optional[int] = None
-    skills:Optional[str] = None
+    location: Optional[str] = None
+    salary: Optional[str] = None
+    experience_level: Optional[int] = None
+    skills: Optional[str] = None
 
 
 class FeatureJob(BaseModel):
@@ -32,15 +31,24 @@ class FeatureJob(BaseModel):
     featured_until: datetime | None = None
     featured_priority: int = 0
 
+
+class JobCompanyResponse(BaseModel):
+    id: int
+    name: str
+    logo: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class JobResponse(JobBase):
     id: int
-    is_active:bool
-    created_at:datetime
+    company: JobCompanyResponse | None = None
+    is_active: bool
+    created_at: datetime
     is_featured: bool
-   
-    class Config:
 
-         model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
+
 
 class PaginatedJobResponse(BaseModel):
     page: int
@@ -49,4 +57,4 @@ class PaginatedJobResponse(BaseModel):
     total_pages: int
     data: list[JobResponse]
 
-    model_config = {"from_attributes": True}  
+    model_config = ConfigDict(from_attributes=True)
