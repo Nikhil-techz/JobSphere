@@ -1,6 +1,12 @@
 import { MapPin, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function JobSearch() {
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate("/login");
+  };
   return (
     <section className="bg-gradient-to-b from-white to-gray-50 pb-14 sm:pb-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -31,7 +37,8 @@ function JobSearch() {
             {/* Search Button */}
             <button
               type="button"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700 md:w-auto"
+              onClick={handleSearch}
+              className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700 md:w-auto"
             >
               <Search className="h-4 w-4" />
               Search Jobs

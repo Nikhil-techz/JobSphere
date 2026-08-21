@@ -84,7 +84,7 @@ class ApplicationService:
         job_id,
         db,
         current_user):
-        if current_user.role != UserRole.applicant:
+        if current_user.role != UserRole.recruiter:
             raise HTTPException(status_code = 403, detail = "only recruiter can see the job applications")
 
         job =(db.query(Jobs).filter(Jobs.id == job_id).first()) 

@@ -11,7 +11,7 @@ from services.job_services import JobService
 
 router = APIRouter(prefix="/jobs",tags=["Jobs"])
 
-job_service = JobService()
+
 
 @router.post("/",response_model = JobResponse,status_code=201)
 
@@ -21,7 +21,7 @@ def create_job(
     current_user = Depends(get_current_user)
 
 ):
-    return job_service.create_job(
+    return JobService.create_job(
         db = db,
         job_data = job_data,
         current_user = current_user
@@ -47,7 +47,7 @@ def get_all_jobs(
     if current_user.role != UserRole.applicant:
         raise HTTPException(status_code = 403, detail = "Only applicant can access jobs.")
 
-    return job_service.get_jobs(
+    return JobService.get_jobs(
         db = db,
         title=title,
         company=company,
@@ -59,12 +59,27 @@ def get_all_jobs(
     )
 
 
+@router.get("/my-jobs", response_model=PaginatedJobResponse)
+def get_my_jobs(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100)
+):
+    return JobService.get_my_jobs(
+        db=db,
+        current_user=current_user,
+        page=page,
+        limit=limit
+    )
+
+
 @router.get("/{id}",response_model = JobResponse)
 def get_job_by_id(
     id:int,
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)):
-    return job_service.get_job_by_id(
+    return JobService.get_job_by_id(
         id = id,
         db = db,
         current_user = current_user
@@ -79,7 +94,7 @@ def update_job(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    return job_service.update_job(
+    return JobService.update_job(
         db=db,
         job_id=job_id,
         job_data=job_data,
@@ -94,7 +109,7 @@ def feature_job(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    return job_service.feature_job(
+    return JobService.feature_job(
         db=db,
         job_id=job_id,
         job_data=job_data,
@@ -106,7 +121,7 @@ def feature_job(
 def get_featured_jobs(
     db: Session = Depends(get_db)
 ):
-    return job_service.get_featured_jobs(
+    return JobService.get_featured_jobs(
         db=db
     )
 
@@ -118,7 +133,7 @@ def delete_job(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    return job_service.delete_job(
+    return JobService.delete_job(
         db=db,
         job_id=job_id,
         current_user=current_user

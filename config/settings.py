@@ -24,12 +24,14 @@ class Settings(BaseSettings):
     # account deletion 
     ACCOUNT_DELETION_GRACE_DAYS: int = 7
 
-
-
-
-    
-model_config = SettingsConfigDict(
-    env_file = ".env"
+    # OAuth 
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URL: str
+    SESSION_SECRET_KEY: str
+    model_config = SettingsConfigDict(
+        env_file = ".env",
+        env_file_encoding="utf-8"
 )
 
 settings = Settings() 

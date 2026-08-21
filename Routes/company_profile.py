@@ -8,7 +8,7 @@ from schemas.dashboard import  RecruiterDashboardResponse
 
 router = APIRouter(prefix="/company",tags = ["company"]) 
 
-company_service = CompanyService
+
 
 
 @router.post("/",response_model = CompanyResponse)
@@ -18,7 +18,7 @@ def create_company(
         db:Session = Depends(get_db),
         current_user = Depends(get_current_user)
 ):
-    return company_service.create_company_detail(
+    return CompanyService.create_company_detail(
         db = db,
         user_data = company_data,
         current_user = current_user
@@ -31,7 +31,7 @@ def get_company(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ): 
-    return company_service.get_company_detail(
+    return CompanyService.get_company_detail(
         db = db,
         user_id = current_user.id
 
@@ -47,7 +47,7 @@ def get_all_company(
     company_name:str | None = None,
     industry:str |None = None
 ):
-    return company_service.get_all_company_detail (
+    return CompanyService.get_all_company_detail (
         db = db,
         page = page,
         limit = limit,
@@ -58,7 +58,7 @@ def get_all_company(
 
 
 
-@router.patch("/me",response_model = CompanyUpdate)
+@router.patch("/me",response_model = CompanyResponse)
 
 def update_my_company(
     
@@ -66,7 +66,7 @@ def update_my_company(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return company_service.update_company_detail(
+    return CompanyService.update_company_detail(
         
         company_data = data,
         db = db,
@@ -80,7 +80,7 @@ def get_recruiter_dashboard(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return company_service.recruiter_dashboard(
+    return CompanyService.recruiter_dashboard(
         db = db,
         current_user = current_user
     )

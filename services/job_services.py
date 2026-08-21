@@ -8,8 +8,9 @@ from datetime import datetime
 
 
 class JobService:
+    @staticmethod
     def create_job(
-            self,
+            
             db,
             job_data,
             current_user
@@ -36,9 +37,9 @@ class JobService:
         return job 
 
 
-
+    @staticmethod
     def get_jobs(
-            self,
+            
             db,
             title: str | None = None,
             company: str | None = None,
@@ -75,9 +76,37 @@ class JobService:
         page=page,
         limit=limit
     )
+    @staticmethod
+    def get_my_jobs(
+    
+    db,
+    current_user,
+    page,
+    limit
+):
+        if current_user.role != UserRole.recruiter:
+            raise HTTPException(
+                status_code=403,
+                detail="Only recruiters can access their jobs."
+            )
 
+        
+        query = (
+            db.query(Jobs)
+            .filter(Jobs.recruiter_id == current_user.id)
+            .order_by(Jobs.id.desc())
+        )
+
+        
+        return paginate(
+            query=query,
+            page=page,
+            limit=limit
+        )
+    ...
+    @staticmethod
     def get_job_by_id(
-            self,
+           
             id,
             db,
             current_user
@@ -93,9 +122,9 @@ class JobService:
             raise HTTPException(status_code = 404,detail=f"Job With ID {id} not found")
         return jobs
 
-
+    @staticmethod
     def update_job(
-        self,
+        
         db,
         job_id,
         job_data,
@@ -130,9 +159,9 @@ class JobService:
         db.refresh(job)
 
         return job
-
+    @staticmethod
     def feature_job(
-        self,
+        
         db,
         job_id,
         job_data,
@@ -165,9 +194,9 @@ class JobService:
         db.refresh(job)
 
         return job
-
+    @staticmethod
     def get_featured_jobs(
-        self,
+        
         db
     ):
         featured_jobs = db.query(Jobs).filter(
@@ -180,9 +209,9 @@ class JobService:
 
         return featured_jobs
 
-
+    @staticmethod
     def delete_job(
-        self,
+       
         db: Session,
         job_id: int,
         current_user
@@ -214,7 +243,7 @@ class JobService:
 
         db.commit()
 
-        return {"message": "Job Deleted Successfully"}
+        return {"message": "Job Deleted Successfully"} 
 
 
     

@@ -73,7 +73,7 @@ async def update_application(
     db:Session = Depends(get_db),
     current_user = Depends(get_current_user)
     ):
-    return ApplicationService.update_application(
+    return await ApplicationService.update_application(
         application_id = application_id,
         application_update = application_update,
         background_tasks = background_tasks,

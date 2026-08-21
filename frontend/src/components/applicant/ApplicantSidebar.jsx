@@ -118,7 +118,7 @@ function ApplicantSidebar({ isOpen, onClose }) {
             type="button"
             onClick={handleLogout}
             className="
-              flex w-full items-center gap-3 rounded-lg
+             flex cursor-pointer w-full items-center gap-3 rounded-lg
               px-4 py-3 text-sm font-medium text-red-600
               transition hover:bg-red-50
             "

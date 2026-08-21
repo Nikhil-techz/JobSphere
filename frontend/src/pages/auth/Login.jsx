@@ -106,12 +106,12 @@ function Login() {
 
           {/* Forgot Password */}
           <div className="flex justify-end">
-            <button
-              type="button"
-              className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
+            <Link
+              to="/forgot-password"
+              className="cursor-pointer text-sm font-medium text-blue-600 transition hover:text-blue-700"
             >
               Forgot password?
-            </button>
+            </Link>
           </div>
 
           {/* Submit */}
@@ -127,7 +127,7 @@ function Login() {
         <p className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link
-            to="/register"
+            to="/"
             className="font-semibold text-blue-600 transition hover:text-blue-700"
           >
             Create an account

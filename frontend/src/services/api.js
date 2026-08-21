@@ -26,6 +26,25 @@ export const loginUser = async (loginData) => {
   return response.data;
 };
 
+// forgot password
+export const forgotPassword = async (email) => {
+  const response = await api.post("/auth/forgot-password", {
+    email: email,
+  });
+
+  return response.data;
+};
+
+// Reset password token
+export const resetPassword = async ({ token, new_password }) => {
+  const response = await api.post("/auth/reset-password", {
+    token,
+    new_password,
+  });
+
+  return response.data;
+};
+
 // Get currently logged-in user's profile
 export const getProfile = async () => {
   const response = await api.get("/auth/profile");
@@ -189,6 +208,82 @@ export const getResume = async () => {
 export const deleteResume = async () => {
   const response = await api.delete("/resume/");
 
+  return response.data;
+};
+
+// create job
+export const createJob = async (jobData) => {
+  const response = await api.post("/jobs/", jobData);
+  return response.data;
+};
+// get my job
+export const getMyJobs = async () => {
+  const response = await api.get("/jobs/my-jobs");
+  return response.data;
+};
+
+// Update job
+export const updateJob = async (jobId, jobData) => {
+  const response = await api.put(`/jobs/${jobId}`, jobData);
+
+  return response.data;
+};
+
+// Delete job
+export const deleteJob = async (jobId) => {
+  const response = await api.delete(`/jobs/${jobId}`);
+
+  return response.data;
+};
+
+// Feature / Unfeature job
+export const featureJob = async (jobId, isFeatured) => {
+  const response = await api.patch(`/jobs/${jobId}/feature`, {
+    is_featured: isFeatured,
+  });
+
+  return response.data;
+};
+
+// Get applications for a recruiter's job
+export const getJobApplications = async (jobId) => {
+  const response = await api.get(`/Applications/jobs/${jobId}/applications`);
+
+  return response.data;
+};
+
+// Update application status
+export const updateApplicationStatus = async (applicationId, status) => {
+  const response = await api.patch(
+    `/Applications/application/${applicationId}`,
+    {
+      status,
+    }
+  );
+
+  return response.data;
+};
+
+// RECRUITER DASHBOARD API
+
+export const getRecruiterDashboard = async () => {
+  const response = await api.get("/company/dashboard");
+
+  return response.data;
+};
+// company profile
+export const getCompanyProfile = async () => {
+  const response = await api.get("/company/me");
+  return response.data;
+};
+
+export const createCompanyProfile = async (companyData) => {
+  const response = await api.post("/company/", companyData);
+  return response.data;
+};
+
+export const updateCompanyProfile = async (companyData) => {
+  const response = await api.patch("/company/me", companyData);
   return response.data;
 };
 

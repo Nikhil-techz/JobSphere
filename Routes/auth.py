@@ -1,14 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from fastapi import Response
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Response
 from datetime import datetime, timezone, timedelta
-# from fastapi.security import OAuth2PasswordRequestForm
-from config.security import create_access_token 
-from config.settings import settings
+from config.security import create_access_token , verify_password, hash_password
 from dependencies.auth_dependency import get_current_user
 from sqlalchemy.orm import Session
 from models.user import Users
 from schemas.user import UserLogin, ForgotPasswordRequest,ChangePassword, ResetPasswordRequest, DeleteAccountRequest
-from config.security import verify_password, hash_password
 from config.settings import settings
 from database.dependency import get_db
 from services.verification_service import generate_verification_token, hash_verification_token, verification_token_expiry
@@ -45,7 +41,8 @@ async def login(
     return {
         "message": "Login successful"
     }
-    
+
+
 
 @router.post("/logout")
 async def logout(response: Response):

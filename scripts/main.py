@@ -1,21 +1,29 @@
 from fastapi import FastAPI
+from config.settings import settings 
 from fastapi.middleware.cors import CORSMiddleware
 from database.db import engine, Base
 from Routes import (
     user,auth,jobs,application,applicant_profile, 
-    resume_upload,saved_jobs,company_profile
+    resume_upload,saved_jobs,company_profile,oauth
 
     )
-import database.base 
+from starlette.middleware.sessions import SessionMiddleware
 
 
 app = FastAPI()
 
 app.add_middleware(
+    SessionMiddleware,
+    secret_key = settings.SESSION_SECRET_KEY,
+    same_site="lax",
+    https_only=False,
+)
+
+app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
+        settings.FRONTEND_URL
+        
     ],
     allow_credentials= True,
     allow_origin_regex=r"http://(localhost|127\.0\.0\.1):\d+",
@@ -23,6 +31,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 
 Base.metadata.create_all(bind=engine)
 app.include_router(user.router)
@@ -33,6 +43,7 @@ app.include_router(applicant_profile.router)
 app.include_router(resume_upload.router) 
 app.include_router(saved_jobs.router)
 app.include_router(company_profile.router)
+app.include_router(oauth.router)
 
 
 @app.get("/")
