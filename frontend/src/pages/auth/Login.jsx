@@ -1,14 +1,20 @@
 import { useState } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
+
 import { useAuth } from "../../context/AuthContext";
+
 import { loginUser } from "../../services/api";
 
 import AuthLayout from "../../components/common/AuthLayout";
+
 import InputField from "../../components/common/InputField";
+
 import PasswordInput from "../../components/common/PasswordInput";
 
 function Login() {
   const navigate = useNavigate();
+
   const { loadUser } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -48,11 +54,17 @@ function Login() {
 
       // Redirect based on role
       if (loggedInUser?.role === "applicant") {
-        navigate("/applicant/dashboard", { replace: true });
+        navigate("/applicant/dashboard", {
+          replace: true,
+        });
       } else if (loggedInUser?.role === "recruiter") {
-        navigate("/recruiter/dashboard", { replace: true });
+        navigate("/recruiter/dashboard", {
+          replace: true,
+        });
       } else {
-        navigate("/", { replace: true });
+        navigate("/", {
+          replace: true,
+        });
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -117,7 +129,7 @@ function Login() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 active:scale-[0.99]"
+            className="w-full cursor-pointer rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 active:scale-[0.99]"
           >
             Login
           </button>
@@ -128,7 +140,7 @@ function Login() {
           Don't have an account?{" "}
           <Link
             to="/"
-            className="font-semibold text-blue-600 transition hover:text-blue-700"
+            className="cursor-pointer font-semibold text-blue-600 transition hover:text-blue-700"
           >
             Create an account
           </Link>

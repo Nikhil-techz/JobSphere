@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import RegisterFields from "./RegisterFields";
+
 import useRegisterForm from "../../hooks/useRegisterForm";
 
 function RegisterForm({ role }) {
@@ -38,7 +39,7 @@ function RegisterForm({ role }) {
         </div>
       )}
 
-      {/* Success Message - Outside Form */}
+      {/* Success Message */}
       {successMessage && (
         <div className="fixed right-5 top-5 z-50 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-5 py-3 text-sm font-medium text-green-600 shadow-lg">
           <span>✓</span>
@@ -60,7 +61,7 @@ function RegisterForm({ role }) {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full cursor-pointer rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isLoading ? "Creating account..." : "Create account"}
         </button>
@@ -71,7 +72,7 @@ function RegisterForm({ role }) {
         Already have an account?{" "}
         <Link
           to="/login"
-          className="font-semibold text-blue-600 transition hover:text-blue-700"
+          className="cursor-pointer font-semibold text-blue-600 transition hover:text-blue-700"
         >
           Login
         </Link>

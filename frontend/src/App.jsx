@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import OAuthCallback from "./components/auth/OAuthCallback";
 
 // Public pages
 import Home from "./pages/Home";
@@ -6,6 +7,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import VerifyEmail from "./components/auth/VerifyEmail";
 
 // Applicant pages
 import ApplicantDashboard from "./pages/applicant/ApplicantDashboard";
@@ -41,10 +43,12 @@ function App() {
       <Route path="/" element={<Home />} />
 
       <Route path="/login" element={<Login />} />
+      <Route path="/oauth/callback" element={<OAuthCallback />} />
 
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
       {/* 
                 APPLICANT ROUTES

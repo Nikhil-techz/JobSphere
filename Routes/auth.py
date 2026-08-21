@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Response
+from fastapi.responses import RedirectResponse
 from datetime import datetime, timezone, timedelta
 from config.security import create_access_token , verify_password, hash_password
 from dependencies.auth_dependency import get_current_user
@@ -59,12 +60,13 @@ async def logout(response: Response):
 
     
 @router.get("/profile")
-def profile(current_user = Depends(get_current_user)):
+def profile(current_user=Depends(get_current_user)):
     return {
-        "id":current_user.id,
-        "name":current_user.name,
-        "email":current_user.email,
-        "role":current_user.role
+        "id": current_user.id,
+        "name": current_user.name,
+        "email": current_user.email,
+        "role": current_user.role.value,
+        "is_verified": current_user.is_verified
     }
 
 
@@ -103,9 +105,10 @@ async def verify_email(
 
     )
 
-    return {
-        "message": "Email verified successfully."
-    }
+    return RedirectResponse(
+        url=f"{settings.FRONTEND_URL}/verify-email?status=success",
+        status_code=302
+    )
 
 
 @router.post("/forgot-password") 

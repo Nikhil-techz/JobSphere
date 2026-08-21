@@ -9,8 +9,30 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("access_token");
 
-// AUTH APIs
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// OAuth Signup APIs
+export const googleSignup = (role) => {
+  window.location.href = `${API_BASE_URL}/auth/google/signup?role=${role}`;
+};
+
+// Oauth Login APIs
+export const googleLogin = () => {
+  window.location.href = `${API_BASE_URL}/auth/google/login`;
+};
 
 // Register user
 export const registerUser = async (userData) => {
