@@ -1,6 +1,7 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import ThemeToggle from "../common/ThemeToggle";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,7 +24,7 @@ function Navbar() {
   }
 
   return (
-    <nav className="border-b border-gray-100 bg-white">
+    <nav className="border-b border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-950">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Navbar Header */}
         <div className="flex h-16 items-center justify-between">
@@ -31,31 +32,36 @@ function Navbar() {
           <Link
             to="/"
             onClick={closeMobileMenu}
-            className="text-xl font-bold text-gray-900"
+            className="text-xl font-bold text-gray-900 transition dark:text-white"
           >
             JobSphere
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden items-center gap-3 md:flex">
+            {/* Jobs */}
             <Link
               to="/jobs"
-              className="px-3 py-2 text-sm font-medium text-gray-600 transition hover:text-gray-900"
+              className="px-3 py-2 text-sm font-medium text-gray-600 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
             >
               Jobs
             </Link>
 
+            {/* Companies */}
             <Link
               to="/companies"
-              className="px-3 py-2 text-sm font-medium text-gray-600 transition hover:text-gray-900"
+              className="px-3 py-2 text-sm font-medium text-gray-600 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
             >
               Companies
             </Link>
 
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Login */}
             <Link
               to="/login"
-              className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-100"
+              className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-100 dark:border-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-900"
             >
               Login
             </Link>
@@ -74,7 +80,7 @@ function Navbar() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen((current) => !current)}
-            className="rounded-lg p-2 text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 md:hidden"
+            className="cursor-pointer rounded-lg p-2 text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white md:hidden"
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
           >
@@ -88,29 +94,40 @@ function Navbar() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="border-t border-gray-100 py-4 md:hidden">
+          <div className="border-t border-gray-100 py-4 dark:border-gray-800 md:hidden">
             <div className="flex flex-col gap-2">
+              {/* Mobile Jobs */}
               <Link
                 to="/jobs"
                 onClick={closeMobileMenu}
-                className="rounded-lg px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                className="rounded-lg px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
               >
                 Jobs
               </Link>
 
+              {/* Mobile Companies */}
               <Link
                 to="/companies"
                 onClick={closeMobileMenu}
-                className="rounded-lg px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                className="rounded-lg px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
               >
                 Companies
               </Link>
+
+              {/* Mobile Theme Toggle */}
+              <div className="flex items-center justify-between rounded-lg px-3 py-3 dark:bg-gray-900">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Theme
+                </span>
+
+                <ThemeToggle />
+              </div>
 
               {/* Mobile Login */}
               <Link
                 to="/login"
                 onClick={closeMobileMenu}
-                className="rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-3 text-center text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
+                className="rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-3 text-center text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100 dark:border-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900"
               >
                 Login
               </Link>
@@ -119,7 +136,7 @@ function Navbar() {
               <button
                 type="button"
                 onClick={handleSignUpClick}
-                className="rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700"
+                className="cursor-pointer rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700"
               >
                 Sign Up
               </button>

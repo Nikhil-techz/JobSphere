@@ -84,11 +84,11 @@ function Login() {
       <div className="w-full max-w-md">
         {/* Heading */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
             Welcome back
           </h1>
 
-          <p className="mt-2 text-sm text-gray-600 sm:text-base">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 sm:text-base">
             Login to continue to JobSphere
           </p>
         </div>

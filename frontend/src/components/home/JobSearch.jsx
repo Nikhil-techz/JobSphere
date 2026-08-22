@@ -7,30 +7,31 @@ function JobSearch() {
   const handleSearch = () => {
     navigate("/login");
   };
+
   return (
-    <section className="bg-gradient-to-b from-white to-gray-50 pb-14 sm:pb-16">
+    <section className="bg-gradient-to-b from-white to-gray-50 pb-14 dark:from-gray-900 dark:to-gray-950 sm:pb-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="rounded-2xl border border-indigo-100 bg-white p-3 shadow-md shadow-indigo-100/40">
+        <div className="rounded-2xl border border-indigo-100 bg-white p-3 shadow-md shadow-indigo-100/40 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto]">
             {/* Job Search Input */}
-            <div className="flex min-w-0 items-center gap-3 rounded-lg border border-indigo-100 bg-indigo-50/40 px-4 py-3 transition focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100">
-              <Search className="h-5 w-5 shrink-0 text-indigo-500" />
+            <div className="flex min-w-0 items-center gap-3 rounded-lg border border-indigo-100 bg-indigo-50/40 px-4 py-3 transition focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 dark:border-gray-600 dark:bg-gray-900/60 dark:focus-within:border-indigo-400 dark:focus-within:bg-gray-800 dark:focus-within:ring-indigo-900/50">
+              <Search className="h-5 w-5 shrink-0 text-indigo-500 dark:text-indigo-400" />
 
               <input
                 type="text"
                 placeholder="Job title, skills, or company"
-                className="min-w-0 w-full bg-transparent text-sm font-medium text-gray-800 outline-none placeholder:font-medium placeholder:text-slate-500"
+                className="min-w-0 w-full bg-transparent text-sm font-medium text-gray-800 outline-none placeholder:font-medium placeholder:text-slate-500 dark:text-gray-100 dark:placeholder:text-gray-400"
               />
             </div>
 
             {/* Location Input */}
-            <div className="flex min-w-0 items-center gap-3 rounded-lg border border-violet-100 bg-violet-50/40 px-4 py-3 transition focus-within:border-violet-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-violet-100">
-              <MapPin className="h-5 w-5 shrink-0 text-violet-500" />
+            <div className="flex min-w-0 items-center gap-3 rounded-lg border border-violet-100 bg-violet-50/40 px-4 py-3 transition focus-within:border-violet-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-violet-100 dark:border-gray-600 dark:bg-gray-900/60 dark:focus-within:border-violet-400 dark:focus-within:bg-gray-800 dark:focus-within:ring-violet-900/50">
+              <MapPin className="h-5 w-5 shrink-0 text-violet-500 dark:text-violet-400" />
 
               <input
                 type="text"
                 placeholder="City, state, or remote"
-                className="min-w-0 w-full bg-transparent text-sm font-medium text-gray-800 outline-none placeholder:font-medium placeholder:text-slate-500"
+                className="min-w-0 w-full bg-transparent text-sm font-medium text-gray-800 outline-none placeholder:font-medium placeholder:text-slate-500 dark:text-gray-100 dark:placeholder:text-gray-400"
               />
             </div>
 
